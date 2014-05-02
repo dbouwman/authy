@@ -1,0 +1,24 @@
+<div class="row">
+  <h2>Items</h2>
+  <table class="table table-striped table-hover table-border">
+    <thead>
+      <tr>
+        <td>Title</td>
+        <td>Type</td>
+        <td>Modified</td>
+        <td>Sharing</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items">
+        <td><a ui-sref="details({id: item.id})" >{{item.title}}</a></td>
+        <td>{{item.type}}</td>
+        <td>{{item.modified | date : relativeDate}}</td>
+        <td>{{item.access}}</td>
+        <td><a ui-sref="edit({id: item.id})" >Edit</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>

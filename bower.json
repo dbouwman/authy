@@ -9,7 +9,11 @@
     "bootstrap": "~3.0.3",
     "angular-resource": "1.2.15",
     "angular-sanitize": "1.2.15",
-    "angular-ui-router": "~0.2.10"
+    "angular-ui-router": "~0.2.10",
+    "angular-relative-date": "~0.1.0",
+    "angular-cookies": "~1.2.16",
+    "ng-tags-input": "2.0.1",
+    "jsTag": "~0.2.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

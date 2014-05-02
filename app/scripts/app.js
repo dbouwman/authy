@@ -1,33 +1,17 @@
 'use strict';
 
-var authyApp = angular.module('authyApp', ['ngResource','ngSanitize','ui.router']);
+var authyApp = angular.module('authyApp', ['ngResource','ngSanitize','ngCookies','ui.router','ngTagsInput']);
 
 
-authyApp.config(function ($stateProvider, $urlRouterProvider) {
+authyApp
+.config(function ($stateProvider, $urlRouterProvider) {
+   // You can only inject Providers (not instances)
 
-  //handle the AGO redirects
-  $urlRouterProvider.when(/access_token.*/, function($match){
-    return '/auth?'+ $match;
-  });
-  $urlRouterProvider.when(/error.*/, function($match){
-    return '/autherr?'+ $match;
-  });
 
   $urlRouterProvider.otherwise('/home');
 
   $stateProvider
-    //login
-    .state('auth', {
-      url: '/auth?access_token&expires_in&username',
-      templateUrl: 'templates/auth.html',
-      controller: 'AuthController'
-    })
 
-    .state('autherr', {
-      url: '/autherr?error&error_description',
-      templateUrl: 'templates/autherr.html',
-      controller: 'AuthErrController'
-    })
 
     //Home State and nested templates
     .state('items', {
@@ -36,11 +20,37 @@ authyApp.config(function ($stateProvider, $urlRouterProvider) {
       controller: 'ItemsController'
     })
 
+    .state('details', {
+      url: '/items/:id',
+      templateUrl: 'templates/item-details.html',
+      controller: 'ItemDetailController'
+    })
+
+    .state('edit', {
+      url: '/items/edit/:id',
+      templateUrl: 'templates/item-edit.html',
+      controller: 'ItemEditController'
+    })
+
     .state('home',{
       url: '/home',
-      templateUrl: 'templates/home.html'
+      templateUrl: 'templates/home.html',
+      controller: 'HomeController'
+    })
+
+    .state('results',{
+      url: '/search?q',
+      templateUrl: 'templates/results.html',
+      controller: 'ResultsController'
     })
 
     ;// close things off
 
+}).
+run(function(identityService){
+   // You can only inject instances (not Providers)
+   
+   //ask the identityService to check the cookie
+   identityService.checkCookie();
+   
 });

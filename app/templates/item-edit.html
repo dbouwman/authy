@@ -1,0 +1,49 @@
+<div class="row">
+
+  <h2>Edit {{item.title}}</h2>
+  <form class="form-horizontal" role="form">
+
+    <div class="col-md-4 ">
+    
+        <div class="form-group">
+          <label for="">Title</label>
+          <input type="text" class="form-control" ng-model="item.title">
+        </div>
+
+        <div class="form-group">
+          <label for="">Description</label>
+          <textarea 
+            class="form-control" 
+            ng-model="item.description"
+            maxlength="1500" 
+            data-ng-minLength="0"   
+            required 
+            highlight-on-error>
+          </textarea>
+          <span class="form-help">{{1500-item.description.length}} Characters left</span>
+        </div>
+
+        <div class="form-group">
+          <label for="">Short Description</label>
+          <textarea class="form-control" 
+          ng-model="item.snippet"
+          maxlength="1500"></textarea>
+          <span class="form-help">{{200-item.snippet.length}} Characters left</span>
+        </div>
+
+        <div class="form-group">
+          <tags-input ng-model="item.tags"></tags-input>
+
+          <button ng-click="update(item)" class="btn btn-primary">Save</button>
+        </div>
+         
+     </div>
+     <div class="col-md-8">
+      <label for="">zee Json</label>
+       <pre>{{item | json}}</pre>
+     </div>
+   
+  </form>
+  <hr>
+  <a ui-sref="items">Back</a>
+</div>

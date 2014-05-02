@@ -12,17 +12,19 @@
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css" />
+    <link rel="stylesheet" href="bower_components/jsTag/jsTag/compiled/jsTag.css" />
     <!-- endbower -->
     <!-- endbuild -->
-    <!-- build:css({.tmp,app}) styles/main.css 
-    <link rel="stylesheet" href="styles/authy.css">-->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="styles/authy.css">
     <!-- endbuild -->
   </head>
   <body ng-app="authyApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-default" role="navigation" >
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -38,16 +40,17 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
  
-        <ul class="nav navbar-nav navbar-right">
-<!--           <li><a ui-sref="items">My Items</a></li> -->
+        <ul class="nav navbar-nav navbar-right" ng-controller="AuthNavController">
+          <li ng-show="isLoggedIn()"><a ui-sref="items">My Items</a></li>
+          <li ng-hide="isLoggedIn()"><a class="btn" ng-click="startAuth()">Sign in</a></li>
           <li><a href="https://github.com/dbouwman/authy">github</a></li>
         </ul>
-       <!--  <form class="navbar-form navbar-right" role="search">
+       <form class="navbar-form navbar-right" role="search" ng-controller="SearchController">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Enter Search Terms">
+            <input type="text" class="form-control" ng-model="query" placeholder="Enter Search Terms">
           </div>
-          <button type="submit" class="btn btn-default">Search</button>
-        </form> -->
+          <button ng-click="search(query)" class="btn btn-default">Search</button>
+        </form> 
       </div> <!--/.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
@@ -75,16 +78,34 @@
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-relative-date/angular-relative-date.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+    <script src="bower_components/jsTag/jsTag/compiled/jsTag.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/auth.js"></script>
-        <script src="scripts/controllers/autherr.js"></script>
+        <script src="scripts/common/transformRequestAsFormPost.js"></script>
+        <script src="scripts/common/tagManager.js"></script>
+        <script src="scripts/controllers/home.js"></script>
         <script src="scripts/controllers/items.js"></script>
+        <script src="scripts/controllers/search.js"></script>
+        <script src="scripts/controllers/results.js"></script>
+        <script src="scripts/controllers/item-details.js"></script>
+        <script src="scripts/controllers/item-edit.js"></script>
+        <script src="scripts/controllers/authnav.js"></script>
+        <script src="scripts/services/IdentityService.js"></script>
+        <script src="scripts/services/ItemService.js"></script>
+        <script src="scripts/services/SearchService.js"></script>
+        <script src="scripts/ng-tags-input.js"></script>
 
         <!-- endbuild -->
+    <script>
+    function finishSignIn(url){
+      console.log('PAGE GOT ' + url);
+    }
+    </script>
 </body>
 </html>

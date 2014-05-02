@@ -1,0 +1,26 @@
+<h2>Results for: <strong>{{query}}</strong></h2>
+
+<div class="row">
+  <div class="col-md-12">
+  <ul class="results-list">
+    <li ng-repeat="dataset in results" >
+      <div data-itemid="{{dataset.id}}">
+        <div class="card-title">
+            <strong><a ui-sref="datasets({id: dataset.id})"> {{dataset.name}} </a></strong> <em>(from {{dataset.item_name}} )</em>
+        </div>
+        <div class="result-main">
+          <p><strong>Url:</strong> {{dataset.url}}<br>
+          <strong>Reported Type:</strong> {{dataset.layer_type}}<br>
+          Shared by {{dataset.owner}} on {{dataset.created_at | date : longDate }}. Updated {{dataset.updated_at | date: longDate}}.<br>
+          <strong>View:</strong>
+          <a ng-href="{{openDataBaseUrl}}/datasets/{{dataset.id}}.json" target="_blank">Dataset Json</a>,
+          <a ng-href="{{dataset.url}}" target="_blank">REST Page</a> ,
+          <a ng-href="{{dataset.arcgis_online_item_url}}" target="_blank">Item at AGO</a>,
+ <a ng-href="https://www.arcgis.com/home/webmap/viewer.html?useExisting=1&layers={{dataset.item_id}}" target="_blank">Item in Map</a>
+          
+        </div>
+      </div>
+    </li>
+  </ul>
+  </div>
+</div>

@@ -1,11 +1,19 @@
 'use strict';
 
-authyApp
+angular.module('authyApp')
   .controller('ItemsController', 
-    function ($scope, $stateParams, $log) {
-    
-      $log.info('Params: ' + $stateParams);
-    
+
+    function ($scope, itemService, $log) {
+      $log.info('ItemsController');
+      itemService.items().then(
+        function(data){
+          $scope.items = data;
+        },
+        function(status){
+          $scope.error = status;
+        }
+      );
+     
 
     }
   );
