@@ -1,0 +1,22 @@
+<html><body marginwidth="0" marginheight="0"><script type="text/javascript">var match;
+console.log('POST IFRAME: ' + window.location.hash);
+if(window.location.hash && (match=window.location.hash.match(/#access_token=([^&]+)/))) {
+  
+  var name = window.location.hash.match(/username=([^&]+)/)[1];
+  var expires = window.location.hash.match(/expires_in=([^&]+)/)[1];
+  var data = {
+    token: match[1],
+    username: name,
+    expires_in: expires
+
+  };
+ console.log(JSON.stringify(data));
+ 
+  if(window.parent ) {
+    window.parent.oauthCallback(data);
+  } else {
+    window.parent.oauthCallback(data);
+  }
+} else {
+  document.write('There was a problem logging in!');
+}</script>
