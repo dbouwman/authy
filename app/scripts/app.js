@@ -38,6 +38,12 @@ authyApp
       controller: 'HomeController'
     })
 
+    .state('signin',{
+      url: '/signin',
+      templateUrl: 'templates/signin.html',
+      controller: 'SignInController'
+    })
+
     .state('results',{
       url: '/search?q',
       templateUrl: 'templates/results.html',
@@ -52,5 +58,8 @@ run(function(identityService){
    
    //ask the identityService to check the cookie
    identityService.checkCookie();
+
+   //window.oauthCallback = angular.bind( identityService, identityService.finishAGOOAuth );
+
    
 });

@@ -42,15 +42,10 @@
  
         <ul class="nav navbar-nav navbar-right" ng-controller="AuthNavController">
           <li ng-show="isLoggedIn()"><a ui-sref="items">My Items</a></li>
-          <li ng-hide="isLoggedIn()"><a class="btn" ng-click="startAuth()">Sign in</a></li>
-          <li><a href="https://github.com/dbouwman/authy">github</a></li>
+          <li ng-show="isLoggedIn()"><a ng-click="signOut()">Sign Out</a></li>
+          <li ng-hide="isLoggedIn()"><a class="btn" ng-click="signInPopUp()">Sign In</a></li>
+          <!-- <li><a href="https://github.com/dbouwman/authy">github</a></li> -->
         </ul>
-       <form class="navbar-form navbar-right" role="search" ng-controller="SearchController">
-          <div class="form-group">
-            <input type="text" class="form-control" ng-model="query" placeholder="Enter Search Terms">
-          </div>
-          <button ng-click="search(query)" class="btn btn-default">Search</button>
-        </form> 
       </div> <!--/.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
@@ -60,7 +55,14 @@
     <div class="container" >
       <div ui-view="">
       </div>
+
+
     </div>
+
+
+
+
+
 
 
 
@@ -88,7 +90,7 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/common/transformRequestAsFormPost.js"></script>
-        <script src="scripts/common/tagManager.js"></script>
+        
         <script src="scripts/controllers/home.js"></script>
         <script src="scripts/controllers/items.js"></script>
         <script src="scripts/controllers/search.js"></script>
@@ -96,6 +98,8 @@
         <script src="scripts/controllers/item-details.js"></script>
         <script src="scripts/controllers/item-edit.js"></script>
         <script src="scripts/controllers/authnav.js"></script>
+        <script src="scripts/controllers/signin.js"></script>
+
         <script src="scripts/services/IdentityService.js"></script>
         <script src="scripts/services/ItemService.js"></script>
         <script src="scripts/services/SearchService.js"></script>

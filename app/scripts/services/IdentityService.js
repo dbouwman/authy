@@ -14,7 +14,7 @@ angular.module('authyApp')
      */
     var config = {
       clientId: 'hhtN8jFtnA0mYWSb', //authy
-      redirectUri: 'http://localhost:9000/post-signin.html',
+      redirectUri: 'http://127.0.0.1:9000/post-signin.html',
       baseUrl: 'http://www.arcgis.com/sharing/rest'
     };
     
@@ -37,6 +37,12 @@ angular.module('authyApp')
         },
 
         /**
+         * Flag to track if a user is logged in
+         * @type {Boolean}
+         */
+        loggedIn: false,
+        
+        /**
          * return the token
          */
         getToken: function(){
@@ -47,22 +53,25 @@ angular.module('authyApp')
           }
         },
 
-        isLoggedIn: function(){
-          if(this.oAuthData){
-            return true;
+        /**
+         * Check if the app's cookie is present, and if so, set the 
+         * loggedIn flag to true;
+         */
+        checkCookie: function(){
+          var oAuthData = $cookieStore.get('authy_auth');
+          
+          if( oAuthData && ( new Date(oAuthData.tokenExpiresAt) > new Date() ) ){
+            console.log('We have a cookie...');
+            //hold onto the auth data
+            this.oAuthData = oAuthData;
+            //unclear if we should use a separate flag, or just use the truthyness of
+            //a defined object?
+            this.loggedIn = true;
           }else{
-            return false;
+            console.log('No cookie...');
           }
         },
 
-        checkCookie: function(){
-          var oAuthData = $cookieStore.get('authy_auth');
-          window.oAuthData = oAuthData;
-          if( oAuthData && ( new Date(oAuthData.tokenExpiresAt) > new Date() ) ){
-            //hold onto the auth data
-            this.oAuthData = oAuthData;
-          }
-        },
 
 
         /**
@@ -72,32 +81,53 @@ angular.module('authyApp')
 
           //remove cookies and anyother cruft
           this.signOut();
+          
           //start the oAuth dance
           var  url = "https://www.arcgis.com/sharing/oauth2/authorize?client_id="+config.clientId+"&response_type=token&expiration=20160&redirect_uri=" + config.redirectUri;
           $log.info('Opening oAuth url: ' + url);
+          
+          //attach a callback to window so the oAuth flow has something
+          //to call when it's complete
+          //need to bind scope on otherwise 'this' is window, which does not help much
+          window.oauthCallback = angular.bind( this, this.finishAGOOAuth );
 
+          //open the oauth window...
           window.open(url , "oauth-window", "height=400,width=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes");
 
         },
 
         /**
          * Hold onto the token that is passed in from the 
-         * callback.html file
+         * post-signin.html file
          */
         finishAGOOAuth: function(oAuthData){
 
+
+          //log out what we got back
           $log.info('oAuth Data: ' + JSON.stringify(oAuthData));
 
+          //hold onto the oAuth hash
           this.oAuthData = oAuthData;
-          this.oAuthData.tokenExpiresAt = new Date(new Date().getTime() + oAuthData.expires_in * 1000);
-          this.loggedIn = true;
 
+          //update it with the actual time the token expires at
+          //this will allow us to check if we are getting "close"
+          //and request a new token (not implemented)
+          this.oAuthData.tokenExpiresAt = new Date(new Date().getTime() + oAuthData.expires_in * 1000);
+          
+          //Stuff into a cookie so we don't have to login all the time
           $cookieStore.put('authy_auth',this.oAuthData);
 
+          //set a flag so login status checks are cheap during the digest cycle
+          this.loggedIn = true;
+
+          //remove the callback we attached to window
           if(window.oauthCallback){
             delete window.oauthCallback;
           }
 
+          //redirect to... this should be updated to re-direct to the location 
+          //the user was trying to access, or make it something that can be passed in
+          //for now, just go to items.
           $state.go('items');
           
         },
@@ -115,44 +145,6 @@ angular.module('authyApp')
           //route to home state
           $state.go('home');
         },
-
-        /**
-         * Get all the user's items
-         */
-        getProfile: function(){
-
-          if(this.loggedIn){
-            var deferred = $q.defer();
-
-            if(this.profile){
-              //resolve with the profile we already have
-              deferred.resolve(this.profile);
-            
-            }else{
-            
-              //build the url w. the token
-              var profileUrl = config.baseUrl + '/community/self?f=json&token=' + this.oAuthData.token;
-
-              //do the search - we can do this b/c opendata supports CORS
-              $http({method:'GET',url: profileUrl})
-              .success(function(data,status,headers,config){
-                
-                $log.info(data,status, headers());
-                deferred.resolve(data);
-              })
-              .error(function(data,status,headers,config){
-                $log.error(data,status, headers());
-                deferred.reject(status);
-              });
-              
-            }
-            return deferred.promise;
-          }else{
-            this.startAGOOAuth();
-          }
-        }
-
-        //TODO: Add methods here that can be called in app.config
 
 
       };

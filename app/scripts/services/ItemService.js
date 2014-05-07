@@ -13,26 +13,35 @@ angular.module('authyApp')
        * Get all the user's items
        */
       items: function(offset){
-        //TODO: redirect to login
-        var url = this.contentUrl + '/users/' + identityService.oAuthData.username + '?f=json&token=' + identityService.oAuthData.token;
 
-        var deferred = $q.defer();
+        if(identityService.loggedIn){
+
+          var url = this.contentUrl + '/users/' + identityService.oAuthData.username + '?f=json&token=' + identityService.oAuthData.token;
+
+          var deferred = $q.defer();
+          
+          //wrap things up in q
+          $http({method:'GET', url: url})
+            .success(function(data,status,headers){
+              $log.info('itemService.items()', data,status, headers());
+              deferred.resolve(data.items);
+            })
+            .error(function(data,status,headers){
+              $log.error(data,status, headers());
+              deferred.reject(status);
+            });
+          return deferred.promise;
+
+        }else{
+
+          //not logged in!
+          console.log('user is not logged in');
+        }
         
-        //wrap things up in q
-        $http({method:'GET', url: url})
-          .success(function(data,status,headers){
-            $log.info('itemService.items()', data,status, headers());
-            deferred.resolve(data.items);
-          })
-          .error(function(data,status,headers){
-            $log.error(data,status, headers());
-            deferred.reject(status);
-          });
-        return deferred.promise;
       },
 
       /**
-       * Get and item by id
+       * Get an item by id
        */
       item: function(id){
         var deferred = $q.defer();
@@ -56,12 +65,16 @@ angular.module('authyApp')
         return deferred.promise;
       },
 
+      /**
+       * Update an item
+       */
       updateItem: function(item){
 
         var deferred = $q.defer();
 
         var itemUpdateUrl = this.contentUrl + '/users/' + identityService.oAuthData.username + '/items/' + item.id + '/update?f=json&token=' + identityService.oAuthData.token;
 
+        //remove this - otherwise Portal API pukes
         delete $http.defaults.headers.post['Content-Type'];
 
         //By default, $http serializes the data a json, and sends
@@ -83,7 +96,6 @@ angular.module('authyApp')
 
           })
           .error(function(data,status,headers,config){
-
             $log.error(data,status, headers());
             deferred.reject(status);
 

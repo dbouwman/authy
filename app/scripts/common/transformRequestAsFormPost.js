@@ -12,7 +12,7 @@ angular.module('authyApp')
 
           headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
 
-          return( serializeData( data ) );s
+          return( serializeData( data ) );
 
       }
  

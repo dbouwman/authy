@@ -3,8 +3,9 @@
 angular.module('authyApp')
   .controller('ItemsController', 
 
-    function ($scope, itemService, $log) {
+    function ($scope, identityService, itemService, $log) {
       $log.info('ItemsController');
+
       itemService.items().then(
         function(data){
           $scope.items = data;
